@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Sky Bet Zone - Aviator</title>
+  <style>
+    body {
+      margin: 0;
+      background: linear-gradient(to bottom, #000000, #001f3f);
+      color: white;
+      font-family: Arial, sans-serif;
+      text-align: center;
+      overflow: hidden;
+    }
+    #plane {
+      position: absolute;
+      width: 100px;
+      top: 50%;
+      left: 10%;
+      transform: translateY(-50%);
+      transition: transform 0.05s linear;
+    }
+    #multiplier {
+      font-size: 40px;
+      margin-top: 80px;
+    }
+    .button {
+      padding: 15px 30px;
+      font-size: 20px;
+      margin: 20px 10px;
+      border: none;
+      border-radius: 10px;
+      cursor: pointer;
+    }
+    #start {
+      background-color: green;
+      color: white;
+    }
+    #cashout {
+      background-color: red;
+      color: white;
+    }
+  </style>
+</head>
+<body>
+
+  <h1>Sky Bet Zone - Aviator</h1>
+  <img src="plane.png" id="plane" />
+  <div id="multiplier">1.00x</div>
+  <button class="button" id="start">Start Game</button>
+  <button class="button" id="cashout" disabled>Cash Out</button>
+
+  <audio id="bgMusic" loop>
+    <source src="music.mp3" type="audio/mpeg">
+  </audio>
+
+  <script>
+    let multiplier = 1.00;
+    let interval;
+    let gameStarted = false;
+    const plane = document.getElementById("plane");
+    const multText = document.getElementById("multiplier");
+    const startBtn = document.getElementById("start");
+    const cashoutBtn = document.getElementById("cashout");
+    const bgMusic = document.getElementById("bgMusic");
+
+    function updateGame() {
+      multiplier += 0.01;
+      multText.textContent = multiplier.toFixed(2) + "x";
+      let newLeft = parseFloat(plane.style.left) + 0.5;
+      plane.style.left = newLeft + "%";
+
+      if (multiplier >= 20) {
+        endGame("Crashed!");
+      }
+    }
+
+    function startGame() {
+      if (gameStarted) return;
+      multiplier = 1.00;
+      multText.textContent = "1.00x";
+      plane.style.left = "10%";
+      bgMusic.play();
+      gameStarted = true;
+      interval = setInterval(updateGame, 100);
+      startBtn.disabled = true;
+      cashoutBtn.disabled = false;
+    }
+
+    function endGame(message) {
+      clearInterval(interval);
+      gameStarted = false;
+      startBtn.disabled = false;
+      cashoutBtn.disabled = true;
+      bgMusic.pause();
+      alert(message + " Final multiplier: " + multiplier.toFixed(2) + "x");
+    }
+
+    function cashOut() {
+      if (gameStarted) {
+        endGame("You cashed out!");
+      }
+    }
+
+    startBtn.addEventListener("click", startGame);
+    cashoutBtn.addEventListener("click", cashOut);
+  </script>
+
+</body>
+</html>
